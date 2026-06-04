@@ -4,17 +4,26 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
     <title>SVGoat</title>
   </head>
-  <body class="min-h-dvh bg-neutral-50 text-neutral-900 antialiased">
+  <body class="min-h-dvh bg-black text-white antialiased">
     <div
       x-data="svgoat"
       x-cloak
       class="mx-auto flex min-h-dvh max-w-xl flex-col px-4 py-10"
     >
       <header class="mb-8 text-center">
-        <h1 class="text-2xl font-semibold tracking-tight">SVGoat</h1>
-        <p class="mt-2 text-sm text-neutral-600">
+        <div class="flex items-center justify-center">
+          <img src="/goat.svg" alt="SVGoat" class="size-12" role="img" />
+          <h1 class="text-2xl font-semibold tracking-tight">SVGoat</h1>
+        </div>
+        <p class="mt-2 text-sm text-neutral-400">
           Opinionated SVG optimization. Drop a file or paste markup.
         </p>
       </header>
@@ -22,28 +31,28 @@
       <div
         x-show="error"
         x-text="error"
-        class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+        class="mb-4 rounded-lg border border-red-900 bg-red-950 px-4 py-3 text-sm text-red-200"
         role="alert"
       ></div>
 
       <div
         x-show="warning"
         x-text="warning"
-        class="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"
+        class="mb-4 rounded-lg border border-amber-900 bg-amber-950 px-4 py-3 text-sm text-amber-200"
         role="status"
       ></div>
 
       <button
         type="button"
-        class="w-full rounded-xl border-2 border-dashed px-6 py-10 text-center transition-colors"
-        :class="isDragging ? 'border-neutral-900 bg-neutral-100' : 'border-neutral-300 bg-white hover:border-neutral-400'"
+        class="w-full rounded-lg border-2 border-dashed px-6 py-10 text-center transition-colors"
+        :class="isDragging ? 'border-white bg-neutral-900' : 'border-neutral-700 bg-neutral-950 hover:border-neutral-500'"
         @click="$refs.fileInput.click()"
         @dragover="onDragOver($event)"
         @dragleave="onDragLeave()"
         @drop="onDrop($event)"
       >
-        <span class="block text-sm font-medium">Drop an SVG file here</span>
-        <span class="mt-1 block text-xs text-neutral-500">or click to browse · paste anywhere on the page</span>
+        <span class="block text-base font-medium">Drop an SVG file here</span>
+        <span class="mt-1 block text-sm text-neutral-400">or click to browse · <b>paste anywhere on the page</b></span>
       </button>
 
       <input
@@ -62,7 +71,7 @@
       >
         <p
           x-show="isOptimizing"
-          class="text-center text-sm text-neutral-600"
+          class="text-center text-sm text-neutral-400"
         >
           Optimizing…
         </p>
@@ -70,19 +79,19 @@
         <p
           x-show="hasResult && statsLine"
           x-text="statsLine"
-          class="text-center font-mono text-sm tabular-nums text-neutral-800"
+          class="text-center text-sm tabular-nums text-white"
         ></p>
 
         <div
           x-show="hasResult && previewMarkup"
-          class="mx-auto flex w-full max-w-lg items-center justify-center rounded-lg bg-neutral-100 p-6 [&>svg]:max-h-[min(70vh,32rem)] [&>svg]:max-w-full [&>svg]:h-auto [&>svg]:w-auto"
+          class="mx-auto flex w-full max-w-lg items-center justify-center rounded-lg border border-neutral-800 bg-neutral-50 p-6 [&>svg]:max-h-[min(70vh,32rem)] [&>svg]:max-w-full [&>svg]:h-auto [&>svg]:w-auto"
           x-html="previewMarkup"
         ></div>
 
         <div x-show="hasResult" class="flex justify-center">
           <button
             type="button"
-            class="rounded-lg bg-neutral-900 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
+            class="rounded-lg border border-white bg-white px-6 py-2.5 text-sm font-medium text-black transition-colors hover:bg-neutral-200 disabled:cursor-not-allowed disabled:opacity-50"
             :disabled="isOptimizing"
             @click="copy()"
             x-text="copyLabel"
@@ -90,7 +99,7 @@
         </div>
       </section>
 
-      <footer class="mt-auto pt-12 text-center text-xs text-neutral-500">
+      <footer class="mt-auto pt-12 text-center text-sm text-neutral-400">
         Processed locally in your browser. Nothing is uploaded.
       </footer>
     </div>

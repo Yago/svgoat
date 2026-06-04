@@ -29,6 +29,7 @@ type SvgoatComponent = {
   processFile: (file: File) => Promise<void>;
   processText: (source: string, fileSizeBytes?: number) => Promise<void>;
   setError: (message: string) => void;
+  markCopied: () => void;
   copy: () => Promise<void>;
 };
 
@@ -44,6 +45,11 @@ const yieldToPaint = (): Promise<void> =>
   new Promise(resolve => {
     requestAnimationFrame(() => resolve());
   });
+
+const hasTextSelection = (): boolean => {
+  const selection = window.getSelection();
+  return Boolean(selection?.toString().trim());
+};
 
 /**
  * Alpine.js component: dropzone, optimization, stats, preview, and copy.
@@ -85,6 +91,24 @@ export const svgoat = (): SvgoatComponent => {
         event.preventDefault();
         void this.processText(text);
       });
+
+      document.addEventListener('copy', (event: ClipboardEvent) => {
+        if (this.phase !== 'success' || !this.optimizedOutput || hasTextSelection()) {
+          return;
+        }
+
+        event.preventDefault();
+        event.clipboardData?.setData('text/plain', this.optimizedOutput);
+        this.markCopied();
+      });
+    },
+
+    markCopied() {
+      this.copyLabel = 'Copied!';
+      clearTimeout(copyTimeout);
+      copyTimeout = setTimeout(() => {
+        this.copyLabel = 'Copy';
+      }, COPY_RESET_MS);
     },
 
     onDragOver(event: DragEvent) {
@@ -184,11 +208,7 @@ export const svgoat = (): SvgoatComponent => {
 
       try {
         await navigator.clipboard.writeText(this.optimizedOutput);
-        this.copyLabel = 'Copied';
-        clearTimeout(copyTimeout);
-        copyTimeout = setTimeout(() => {
-          this.copyLabel = 'Copy';
-        }, COPY_RESET_MS);
+        this.markCopied();
       } catch {
         this.error = 'Could not copy to clipboard. Check browser permissions.';
       }
