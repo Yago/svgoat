@@ -4,10 +4,103 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>svgoat</title>
+    <title>SVGoat</title>
   </head>
-  <body>
-    
+  <body class="min-h-dvh bg-neutral-50 text-neutral-900 antialiased">
+    <div
+      x-data="svgoat"
+      x-cloak
+      class="mx-auto flex min-h-dvh max-w-xl flex-col px-4 py-10"
+    >
+      <header class="mb-8 text-center">
+        <h1 class="text-2xl font-semibold tracking-tight">SVGoat</h1>
+        <p class="mt-2 text-sm text-neutral-600">
+          Opinionated SVG optimization. Drop a file or paste markup.
+        </p>
+      </header>
+
+      <div
+        x-show="error"
+        x-text="error"
+        class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+        role="alert"
+      ></div>
+
+      <div
+        x-show="warning"
+        x-text="warning"
+        class="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"
+        role="status"
+      ></div>
+
+      <button
+        type="button"
+        class="w-full rounded-xl border-2 border-dashed px-6 py-10 text-center transition-colors"
+        :class="isDragging ? 'border-neutral-900 bg-neutral-100' : 'border-neutral-300 bg-white hover:border-neutral-400'"
+        @click="$refs.fileInput.click()"
+        @dragover="onDragOver($event)"
+        @dragleave="onDragLeave()"
+        @drop="onDrop($event)"
+      >
+        <span class="block text-sm font-medium">Drop an SVG file here</span>
+        <span class="mt-1 block text-xs text-neutral-500">or click to browse · paste anywhere on the page</span>
+      </button>
+
+      <input
+        x-ref="fileInput"
+        type="file"
+        accept=".svg,image/svg+xml"
+        class="sr-only"
+        @change="onFileSelected($event)"
+      />
+
+      <section
+        x-show="showResult"
+        class="mt-8 space-y-6"
+        :class="isOptimizing && 'pointer-events-none opacity-40'"
+        aria-live="polite"
+      >
+        <p
+          x-show="isOptimizing"
+          class="text-center text-sm text-neutral-600"
+        >
+          Optimizing…
+        </p>
+
+        <p
+          x-show="hasResult && statsLine"
+          x-text="statsLine"
+          class="text-center font-mono text-sm tabular-nums text-neutral-800"
+        ></p>
+
+        <div
+          x-show="hasResult && previewMarkup"
+          class="mx-auto flex w-full max-w-lg items-center justify-center rounded-lg bg-neutral-100 p-6 [&>svg]:max-h-[min(70vh,32rem)] [&>svg]:max-w-full [&>svg]:h-auto [&>svg]:w-auto"
+          x-html="previewMarkup"
+        ></div>
+
+        <div x-show="hasResult" class="flex justify-center">
+          <button
+            type="button"
+            class="rounded-lg bg-neutral-900 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
+            :disabled="isOptimizing"
+            @click="copy()"
+            x-text="copyLabel"
+          ></button>
+        </div>
+      </section>
+
+      <footer class="mt-auto pt-12 text-center text-xs text-neutral-500">
+        Processed locally in your browser. Nothing is uploaded.
+      </footer>
+    </div>
+
+    <style>
+      [x-cloak] {
+        display: none !important;
+      }
+    </style>
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

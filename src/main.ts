@@ -1,10 +1,11 @@
 import Alpine from 'alpinejs';
-import './main.css';
 
-import svgo from './stores/svgo';
+import { svgoat } from './components/svgoat';
+
+import './main.css';
 
 window.Alpine = Alpine;
 
-Alpine.store('svgo', svgo);
+Alpine.data('svgoat', svgoat);
 
 Alpine.start();
